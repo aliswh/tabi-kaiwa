@@ -1,8 +1,14 @@
+const DIFFICULTY_NOTES = {
+  "absolute-beginner":
+    "The user is an absolute beginner. Use very simple, short phrases, prefer common words, and you may mix in a little hiragana-only phrasing if that's more natural. Keep each reply to one short sentence.",
+  "beginner":
+    "The user knows basic greetings and a handful of simple set phrases — a step past absolute beginner, but still early. Use short, simple sentences (one to two per reply) with common, everyday vocabulary and mostly hiragana/katakana plus very common kanji. Avoid complex grammar.",
+  "basic":
+    "The user knows basic greetings and simple phrases. Use short, natural spoken Japanese (1-2 sentences), normal kanji/kana mix is fine.",
+};
+
 function buildSystemPrompt({ role, setting, goal }, difficulty) {
-  const difficultyNote =
-    difficulty === "absolute-beginner"
-      ? "The user is an absolute beginner. Use very simple, short phrases, prefer common words, and you may mix in a little hiragana-only phrasing if that's more natural. Keep each reply to one short sentence."
-      : "The user knows basic greetings and simple phrases. Use short, natural spoken Japanese (1-2 sentences), normal kanji/kana mix is fine.";
+  const difficultyNote = DIFFICULTY_NOTES[difficulty] || DIFFICULTY_NOTES.basic;
 
   return [
     `You are role-playing as ${role} in ${setting}, helping a tourist practice real travel Japanese.`,
