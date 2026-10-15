@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#11131a" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="Practice simple travel Japanese conversations with an on-device AI partner." />
+<title>Tabi Kaiwa</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="css/style.css" />
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Tabi Kaiwa</h1>
+  <div class="streak-pill" id="streak-pill">🔥 0 day streak</div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="view" id="view-home">
+    <div class="card">
+      <h2>Current streak</h2>
+      <div class="big" id="home-streak">0 days</div>
+      <div class="muted" id="home-streak-sub">Practice today to start a streak.</div>
+    </div>
+    <div class="stat-row mb">
+      <div class="card" style="margin-bottom:0">
+        <h2>Vocab saved</h2>
+        <div class="big" id="home-vocab-count">0</div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <h2>Scenarios practiced</h2>
+        <div class="big" id="home-scenario-count">0</div>
+      </div>
+    </div>
+    <div class="card" id="home-sync-card">
+      <h2>Google Drive sync</h2>
+      <p class="muted" id="home-sync-status">Not connected. Your progress will only last for this session.</p>
+      <button class="btn secondary block mt" id="home-signin-btn">Sign in with Google</button>
+    </div>
+    <button class="btn block" id="home-practice-btn">Start practicing →</button>
+  </section>
+
+  <!-- SCENARIOS -->
+  <section class="view" id="view-scenarios">
+    <h2 class="muted mb">Pick a situation</h2>
+    <div class="scenario-grid" id="scenario-grid"></div>
+    <div class="card mt">
+      <h2>Custom situation</h2>
+      <textarea id="custom-scenario-input" rows="3" placeholder="e.g. Checking in a lost suitcase at the airport"></textarea>
+      <button class="btn secondary block mt" id="custom-scenario-btn">Start custom roleplay</button>
+    </div>
+  </section>
+
+  <!-- CHAT -->
+  <section class="view" id="view-chat">
+    <div class="row between center mb">
+      <div>
+        <div style="font-weight:600" id="chat-scenario-title">Scenario</div>
+        <div class="muted" id="chat-engine-status">Loading model…</div>
+      </div>
+      <button class="btn secondary" id="chat-end-btn">End</button>
+    </div>
+    <div class="progress-bar" id="chat-progress-wrap" style="display:none">
+      <div class="fill" id="chat-progress-fill"></div>
+    </div>
+    <div class="chat-log" id="chat-log"></div>
+    <div class="chat-input-row">
+      <button class="mic-btn" id="mic-btn" title="Hold to speak">🎤</button>
+      <input type="text" id="chat-text-input" placeholder="Type in Japanese…" />
+      <button class="btn" id="chat-send-btn">Send</button>
+    </div>
+    <button class="btn secondary block mt" id="save-vocab-btn">Save new words from this chat</button>
+  </section>
+
+  <!-- VOCAB -->
+  <section class="view" id="view-vocab">
+    <div class="row between center mb">
+      <h2 class="muted" style="margin:0">Vocabulary</h2>
+      <button class="btn" id="review-btn">Review due cards</button>
+    </div>
+    <div id="vocab-review-area" style="display:none">
+      <div class="flashcard" id="flashcard">
+        <div class="jp" id="fc-jp">—</div>
+        <div class="reading" id="fc-reading"></div>
+        <div class="en" id="fc-en" style="display:none"></div>
+      </div>
+      <div class="row mt" id="fc-reveal-row">
+        <button class="btn secondary block" id="fc-reveal-btn">Show answer</button>
+      </div>
+      <div class="row mt" id="fc-grade-row" style="display:none">
+        <button class="btn secondary block" id="fc-miss-btn">😵 Missed it</button>
+        <button class="btn block" id="fc-got-btn">✅ Got it</button>
+      </div>
+      <button class="btn secondary block mt" id="fc-speak-btn">🔊 Hear it</button>
+      <button class="btn secondary block mt" id="review-exit-btn">Back to list</button>
+    </div>
+    <div class="vocab-list" id="vocab-list"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="view-settings">
+    <div class="card">
+      <h2>On-device AI model</h2>
+      <div class="field">
+        <label for="model-select">Model</label>
+        <select id="model-select"></select>
+      </div>
+      <div class="muted" id="model-size-hint"></div>
+      <button class="btn secondary block mt" id="model-reload-btn">Apply / download model</button>
+    </div>
+    <div class="card">
+      <h2>Difficulty</h2>
+      <select id="difficulty-select">
+        <option value="absolute-beginner">Absolute beginner (lots of English help)</option>
+        <option value="basic" selected>Basic (some kana/kanji, short replies)</option>
+      </select>
+    </div>
+    <div class="card">
+      <h2>Voice</h2>
+      <label class="row between center">
+        <span>Auto-play AI replies</span>
+        <input type="checkbox" id="autoplay-toggle" checked />
+      </label>
+    </div>
+    <div class="card">
+      <h2>Google Drive sync</h2>
+      <div class="field">
+        <label for="google-client-id">Google OAuth Client ID</label>
+        <input type="text" id="google-client-id" placeholder="xxxx.apps.googleusercontent.com" />
+      </div>
+      <button class="btn secondary block" id="save-client-id-btn">Save Client ID</button>
+      <div class="muted mt" id="settings-sync-status">Not connected.</div>
+      <button class="btn secondary block mt" id="settings-signin-btn">Sign in with Google</button>
+      <button class="btn secondary block mt" id="settings-signout-btn" style="display:none">Sign out</button>
+    </div>
+    <div class="card">
+      <h2>Data</h2>
+      <button class="btn danger block" id="clear-data-btn">Clear all local data</button>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<nav class="tabbar">
+  <button data-view="home" class="active"><span class="icon">🏠</span>Home</button>
+  <button data-view="scenarios"><span class="icon">🗺️</span>Practice</button>
+  <button data-view="vocab"><span class="icon">📒</span>Vocab</button>
+  <button data-view="settings"><span class="icon">⚙️</span>Settings</button>
+</nav>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
